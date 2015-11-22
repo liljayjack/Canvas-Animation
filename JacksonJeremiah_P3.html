@@ -17,6 +17,8 @@
 
 		window.addEventListener('resize', resizeCanvas, false);
 		window.addEventListener('orientationchange', resizeCanvas, false);
+
+		makeCircles();
 		resizeCanvas();
 
 		timer = setInterval(resizeCanvas, 2000);
@@ -44,11 +46,10 @@
 		context.fillStyle = c.color;
 		context.fill();
 
-		iC.color = 'black';
-		iC.radius = iC.radius - 10;
+		
 		context.beginPath();
-		context.arc(iC.x, iC.y, iC.radius, 0, degreesToRadians(360), true);
-		context.fillStyle = iC.color;
+		context.arc(iC.x, iC.y, (iC.radius-5), 0, degreesToRadians(360), true);
+		context.fillStyle = 'black';
 		context.fill();
 	}
 
@@ -107,13 +108,13 @@ function drawStar(outerRadius, innerRadius) {
 		canvas.width = window.innerWidth - 15;
 		canvas.height = window.innerHeight - 15;
 		fillBackgroundColor();
-
-		makeCircles();
 		
 
 		for(var i = 0; i< circles.length; i++){
-			drawCircle(circles[i]);
 			drawStar(30,15);
+		}
+		for(var i = 0; i< circles.length; i++){
+			drawCircle(circles[i]);
 		}
 	}
 

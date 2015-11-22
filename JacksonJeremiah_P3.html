@@ -59,8 +59,10 @@
 		}
 	}
 
-function drawStar(cx, cy, outerRadius, innerRadius) {
+function drawStar(outerRadius, innerRadius) {
     var rot = Math.PI / 2 * 3;
+    var cx = Math.floor(Math.random() * canvas.width);
+    var cy = Math.floor(Math.random() * canvas.height);
     var x = cx;
     var y = cy;
     var step = Math.PI / 5;
@@ -107,10 +109,11 @@ function drawStar(cx, cy, outerRadius, innerRadius) {
 		fillBackgroundColor();
 
 		makeCircles();
-		drawStar(75,100,30,15);
+		
 
 		for(var i = 0; i< circles.length; i++){
 			drawCircle(circles[i]);
+			drawStar(30,15);
 		}
 	}
 

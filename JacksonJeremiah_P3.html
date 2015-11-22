@@ -21,7 +21,7 @@
 		resizeCanvas();
 		makeCircles();
 
-		timer = setInterval(resizeCanvas, 300);
+		timer = setInterval(resizeCanvas, 40);
 
 		//makeCircles();
 		//drawCircle();
@@ -50,6 +50,19 @@
 		context.arc(iC.x, iC.y, (iC.radius-5), 0, degreesToRadians(360), true);
 		context.fillStyle = 'black';
 		context.fill();
+	}
+
+	function growCircles(array){
+	
+		for (var i = 0; i<circles.length; i++){
+			var circle = array[i];
+			if (circle.radius < 75){
+				circle.radius += 2;
+			} else{
+				array.splice(i, 1);
+				array.push(new Circle());
+			}
+		}
 	}
 
 	function makeCircles(){
@@ -107,14 +120,15 @@
 		canvas.width = window.innerWidth - 15;
 		canvas.height = window.innerHeight - 15;
 		fillBackgroundColor();
-		
 
 		for(var i = 0; i< circles.length; i++){
-			drawStars();
+			//drawStars();
 		}
 		for(var i = 0; i< circles.length; i++){
 			drawCircle(circles[i]);
 		}
+
+		growCircles(circles);
 	}
 
 	window.onload = init;

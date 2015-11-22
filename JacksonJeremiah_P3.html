@@ -10,6 +10,7 @@
 	var innerCircles = [];
 	var stars = [];
 	var timer;
+	var timer2;
 	
 
 	function init(){
@@ -23,7 +24,8 @@
 		makeCircles();
 		makeStars();
 
-		timer = setInterval(resizeCanvas, 40);
+		timer = setInterval(resizeCanvas, 50);
+		//timer2 = setInterval(fader, 50);
 	}
 
 	function Circle(){
@@ -42,6 +44,9 @@
     	this.x = this.cx;
 	    this.y = this.cy;
     	this.step = Math.PI / 5;
+
+    	this.vx = Math.random()*20-10;
+		this.vy = Math.random()*20-10;
 
     	this.outerRadius = Math.floor(Math.random()*60 +10);
     	this.innerRadius = this.outerRadius/2;
@@ -67,7 +72,6 @@
 	}
 
 	function growCircles(array){
-	
 		for (var i = 0; i<circles.length; i++){
 			var circle = array[i];
 			if (circle.radius < 75){
@@ -76,6 +80,19 @@
 				array.splice(i, 1);
 				array.push(new Circle());
 			}
+		}
+	}
+
+	function moveStars(array){
+		for (var i = 0; i < stars.length; i++){
+			var star = array[i];
+
+			star.cx += star.vx;
+			star.cy += star.vy;
+			if(star.cx < -50) star.cx = canvas.width+50;
+			if(star.cy < -50) star.cy = canvas.height+50;
+			if(star.cx > canvas.width+50) star.cx = -50;
+			if(star.cy > canvas.height+50) star.cy = -50;
 		}
 	}
 
@@ -107,19 +124,20 @@
         	context.lineTo(str.x, str.y)
         	str.rot += str.step
     		}
-    
-    	//var colors = ['BurlyWood', 'DarkGoldenRod', 'DarkSalmon', 'DarkViolet', 'yellow', 'DarkSeaGreen', 'DarkOrange', 'Crimson'];
-    	//var color = colors[Math.floor(Math.random() * colors.length)];
-    
+
     	context.lineTo(str.cx, str.cy - str.outerRadius)
     	context.closePath();
-    	context.stroke();
     	context.fillStyle=str.color;
 	    context.fill();
 		}
 
 	function fillBackgroundColor(){
 		context.fillStyle = 'black';
+		context.fillRect(0,0, canvas.width, canvas.height);
+		}
+
+	function fader(){
+		context.fillStyle = 'rgba(0,0,0,0.3)';
 		context.fillRect(0,0, canvas.width, canvas.height);
 		}
 
@@ -139,6 +157,7 @@
 			drawCircle(circles[i]);
 		}
 
+		moveStars(stars);
 		growCircles(circles);
 	}
 

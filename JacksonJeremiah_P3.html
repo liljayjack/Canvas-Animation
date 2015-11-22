@@ -19,7 +19,7 @@
 		window.addEventListener('orientationchange', resizeCanvas, false);
 		resizeCanvas();
 
-		timer = setInterval(resizeCanvas, 450);
+		timer = setInterval(resizeCanvas, 2000);
 
 		//makeCircles();
 		//drawCircle();
@@ -54,17 +54,43 @@
 
 	function makeCircles(){
 		circles = []
-		for(var i = 0; i < 30; i++){
+		for(var i = 0; i < 15; i++){
 			circles.push(new Circle());
 		}
 	}
 
+function drawStar(cx, cy, outerRadius, innerRadius) {
+    var rot = Math.PI / 2 * 3;
+    var x = cx;
+    var y = cy;
+    var step = Math.PI / 5;
 
+    //context.strokeSyle = "#000";
+    context.beginPath();
+    context.moveTo(cx, cy - outerRadius)
+    for (i = 0; i < 5; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        context.lineTo(x, y)
+        rot += step
 
-
-
-
-
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        context.lineTo(x, y)
+        rot += step
+    	}
+    
+    var colors = ['BurlyWood', 'DarkGoldenRod', 'DarkSalmon', 'DarkViolet', 'yellow', 'DarkSeaGreen', 'DarkOrange', 'Crimson'];
+    var color = colors[Math.floor(Math.random() * colors.length)];
+    
+    context.lineTo(cx, cy - outerRadius)
+    context.closePath();
+    //context.lineWidth=5;
+    //context.strokeStyle='blue';
+    context.stroke();
+    context.fillStyle=color;
+    context.fill();
+	}
 
 	function fillBackgroundColor(){
 		context.fillStyle = 'black';
@@ -81,6 +107,7 @@
 		fillBackgroundColor();
 
 		makeCircles();
+		drawStar(75,100,30,15);
 
 		for(var i = 0; i< circles.length; i++){
 			drawCircle(circles[i]);

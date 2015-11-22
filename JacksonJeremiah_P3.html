@@ -11,6 +11,10 @@
 	var stars = [];
 	var timer;
 	var timer2;
+	var textColor= 'rgba(255,255,255,1.0)';
+	var trans = .9;
+	var text = 'Just Sit Back and Watch';
+	var fadeCounter = 0
 	
 
 	function init(){
@@ -24,15 +28,45 @@
 		makeCircles();
 		makeStars();
 
-		timer = setInterval(resizeCanvas, 50);
+		timer = setInterval(resizeCanvas, 40);
 		//timer2 = setInterval(fader, 50);
 	}
+
+	function fadeText(){
+		textColor = 'rgba(255,255,255,' +trans+')';
+		if (trans > 0 && fadeCounter==0){
+			trans -=.005;
+		} else if (trans <= 0 && fadeCounter==0){
+			text = 'Relax A Little';
+			fadeCounter++;
+		}
+
+		if (trans <= 1.0 && fadeCounter==1){
+			trans +=.005;
+		} else if (trans >= 1.0 && fadeCounter==1){
+			fadeCounter++
+		}
+
+		if (trans >= 0 && fadeCounter==2){
+			trans -=.005;
+		}
+	}
+
+
+	function writeText(){
+			context.fillStyle = textColor;
+			context.font = '50px Arial';
+			context.textAlign = 'center';
+			context.fillText(text, canvas.width/2, canvas.height/2);
+			fadeText();
+		}
 
 	function Circle(){
 		this.x = Math.floor(Math.random() * canvas.width);
 		this.y = Math.floor(Math.random() * canvas.height);
 
-		var colors = ['BurlyWood', 'DarkGoldenRod', 'DarkSalmon', 'DarkViolet', 'yellow', 'DarkSeaGreen', 'DarkOrange', 'Crimson'];
+		var colors = ['BurlyWood', 'DarkGoldenRod', 'DarkSalmon', 'DarkViolet', 'yellow', 'DarkSeaGreen', 'DarkOrange', 'Crimson',
+						'RoyalBlue', 'Purple', 'Sienna', 'RosyBrown', 'Blue', 'DeepSkyBlue', 'OliveDrab'];
 		this.color = colors[Math.floor(Math.random() * colors.length)];
 		this.radius = Math.floor(Math.random() * (50 - 15 + 1)) + 15;
 	}
@@ -51,7 +85,8 @@
     	this.outerRadius = Math.floor(Math.random()*60 +10);
     	this.innerRadius = this.outerRadius/2;
 
-    	var colors = ['BurlyWood', 'DarkGoldenRod', 'DarkSalmon', 'DarkViolet', 'yellow', 'DarkSeaGreen', 'DarkOrange', 'Crimson'];
+    	var colors = ['BurlyWood', 'DarkGoldenRod', 'DarkSalmon', 'DarkViolet', 'yellow', 'DarkSeaGreen', 'DarkOrange', 'Crimson',
+    					'RoyalBlue', 'Purple', 'Sienna', 'RosyBrown', 'Blue', 'DeepSkyBlue', 'OliveDrab'];
     	this.color = colors[Math.floor(Math.random() * colors.length)];
 	}
 
@@ -136,10 +171,11 @@
 		context.fillRect(0,0, canvas.width, canvas.height);
 		}
 
-	function fader(){
+//meant to fade out previous shapes as new ones move around
+/*	function fader(){
 		context.fillStyle = 'rgba(0,0,0,0.3)';
 		context.fillRect(0,0, canvas.width, canvas.height);
-		}
+		}*/
 
 	function degreesToRadians(degrees){
 		return (degrees*Math.PI)/180;
@@ -159,6 +195,8 @@
 
 		moveStars(stars);
 		growCircles(circles);
+		writeText();
+		fadeText();
 	}
 
 	window.onload = init;

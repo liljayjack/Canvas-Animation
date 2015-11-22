@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+	<title>Canvas Animation</title>
+	<script>
+
+	var canvas;
+	var context;
+	var circles = [];
+	var innerCircles = [];
+	var timer;
+	
+
+	function init(){
+		canvas = document.getElementById('canvas');
+		context = canvas.getContext('2d');
+
+		window.addEventListener('resize', resizeCanvas, false);
+		window.addEventListener('orientationchange', resizeCanvas, false);
+		resizeCanvas();
+
+		timer = setInterval(resizeCanvas, 450);
+
+		//makeCircles();
+		//drawCircle();
+	}
+
+	function Circle(){
+		this.x = Math.floor(Math.random() * canvas.width);
+		this.y = Math.floor(Math.random() * canvas.height);
+
+		//['BurlyWood', 'DarkGoldenRod', 'DarkSalmon', 'DarkViolet', 'yellow', 'DarkSeaGreen', 'DarkOrange', 'Crimson'];
+		var colors = ['BurlyWood', 'DarkGoldenRod', 'DarkSalmon', 'DarkViolet', 'yellow', 'DarkSeaGreen', 'DarkOrange', 'Crimson'];
+		this.color = colors[Math.floor(Math.random() * colors.length)];
+		this.radius = Math.floor(Math.random() * (50 - 15 + 1)) + 15;
+	}
+
+	function drawCircle(circle){
+		var c = circle;
+		var iC = circle;
+
+		context.beginPath();
+		context.arc(c.x, c.y, c.radius, 0, degreesToRadians(360), true);
+		context.fillStyle = c.color;
+		context.fill();
+
+		iC.color = 'black';
+		iC.radius = iC.radius - 10;
+		context.beginPath();
+		context.arc(iC.x, iC.y, iC.radius, 0, degreesToRadians(360), true);
+		context.fillStyle = iC.color;
+		context.fill();
+	}
+
+	function makeCircles(){
+		circles = []
+		for(var i = 0; i < 30; i++){
+			circles.push(new Circle());
+		}
+	}
+
+
+
+
+
+
+
+
+	function fillBackgroundColor(){
+		context.fillStyle = 'black';
+		context.fillRect(0,0, canvas.width, canvas.height);
+		}
+
+	function degreesToRadians(degrees){
+		return (degrees*Math.PI)/180;
+		}
+
+	function resizeCanvas(){
+		canvas.width = window.innerWidth - 15;
+		canvas.height = window.innerHeight - 15;
+		fillBackgroundColor();
+
+		makeCircles();
+
+		for(var i = 0; i< circles.length; i++){
+			drawCircle(circles[i]);
+		}
+	}
+
+	window.onload = init;
+	</script>
+</head>
+
+<body>
+	<canvas id = 'canvas' width=500 height=500></canvas>
+</body>
+</html>

@@ -6,11 +6,22 @@
 
 	var canvas;
 	var context;
+
+	//shape arrays
 	var circles = [];
 	var innerCircles = [];
 	var stars = [];
+	var triangles = [];
+
+	//timers
 	var timer;
 	var timer2;
+
+	//text variables
+	var textColor= 'rgba(255,255,255,1.0)';
+	var trans = .9;
+	var text = 'Just Sit Back and Watch';
+	var fadeCounter = 0
 	
 
 	function init(){
@@ -23,16 +34,55 @@
 		resizeCanvas();
 		makeCircles();
 		makeStars();
+		makeTriangles();
 
-		timer = setInterval(resizeCanvas, 50);
+		timer = setInterval(resizeCanvas, 40);
 		//timer2 = setInterval(fader, 50);
+	}
+
+	function fadeText(){
+		textColor = 'rgba(255,255,255,' +trans+')';
+		if (trans > 0 && fadeCounter==0){
+			trans -=.005;
+		} else if (trans <= 0 && fadeCounter==0){
+			text = 'Relax A Little';
+			fadeCounter++;
+		}
+
+		if (trans <= 1.0 && fadeCounter==1){
+			trans +=.005;
+		} else if (trans >= 1.0 && fadeCounter==1){
+			fadeCounter++
+		}
+
+		if (trans >= 0 && fadeCounter==2){
+			trans -=.005;
+		}
+	}
+
+	function writeText(){
+			context.fillStyle = textColor;
+			context.font = '50px Arial';
+			context.textAlign = 'center';
+			context.fillText(text, canvas.width/2, canvas.height/2);
+			fadeText();
+		}
+
+	function Triangle(){
+		this.height = (Math.random()*40) * (Math.sqrt(3)/2 + 5);
+		this.x = Math.floor(Math.random() * canvas.width);
+		this.y = canvas.height - this.height;
+
+		var colors = ['SaddleBrown', 'Sienna', '#ca641c', '#5a2c0c', '#996633', '#c68c53', '#784d1e', '#784000', '#8e4000'];
+    	this.color = colors[Math.floor(Math.random() * colors.length)];
 	}
 
 	function Circle(){
 		this.x = Math.floor(Math.random() * canvas.width);
-		this.y = Math.floor(Math.random() * canvas.height);
+		this.y = Math.floor(Math.random() * (canvas.height -(40 * (Math.sqrt(3)/2 + 5))));
 
-		var colors = ['BurlyWood', 'DarkGoldenRod', 'DarkSalmon', 'DarkViolet', 'yellow', 'DarkSeaGreen', 'DarkOrange', 'Crimson'];
+		var colors = ['BurlyWood', 'DarkGoldenRod', 'DarkSalmon', 'DarkViolet', 'yellow', 'DarkSeaGreen', 'DarkOrange', 'Crimson',
+						'RoyalBlue', 'Purple', 'Sienna', 'RosyBrown', 'Blue', 'DeepSkyBlue', 'OliveDrab'];
 		this.color = colors[Math.floor(Math.random() * colors.length)];
 		this.radius = Math.floor(Math.random() * (50 - 15 + 1)) + 15;
 	}
@@ -51,7 +101,7 @@
     	this.outerRadius = Math.floor(Math.random()*60 +10);
     	this.innerRadius = this.outerRadius/2;
 
-    	var colors = ['BurlyWood', 'DarkGoldenRod', 'DarkSalmon', 'DarkViolet', 'yellow', 'DarkSeaGreen', 'DarkOrange', 'Crimson'];
+    	var colors = ['Moccasin', 'MistyRose', 'PapayaWhip', 'LightYellow', 'Beige', 'AntiqueWhite', 'Gainsboro', '#fff5e5'];
     	this.color = colors[Math.floor(Math.random() * colors.length)];
 	}
 
@@ -75,7 +125,7 @@
 		for (var i = 0; i<circles.length; i++){
 			var circle = array[i];
 			if (circle.radius < 75){
-				circle.radius += 2;
+				circle.radius += 1;
 			} else{
 				array.splice(i, 1);
 				array.push(new Circle());
@@ -96,8 +146,14 @@
 		}
 	}
 
+	function makeTriangles(){
+		for(var i = 0; i < 30; i++){
+			triangles.push(new Triangle());
+		}
+	}
+
 	function makeCircles(){
-		for(var i = 0; i < 15; i++){
+		for(var i = 0; i < 10; i++){
 			circles.push(new Circle());
 		}
 	}
@@ -106,6 +162,20 @@
 		for(var i = 0; i < circles.length; i++){
 			stars.push(new Star());
 		}
+	}
+
+	function drawTriangles(triangle){
+		var tri = triangle;
+
+		context.beginPath();
+		context.moveTo(tri.x, tri.y);
+		context.lineTo(tri.x+50, tri.y+tri.height);
+		context.lineTo(tri.x-50, tri.y+tri.height);
+		context.lineTo(tri.x, tri.y);
+		context.fillStyle = tri.color;
+		context.fill();
+		context.stroke();
+		context.closePath();
 	}
 
 	function drawStars(star) {
@@ -127,6 +197,7 @@
 
     	context.lineTo(str.cx, str.cy - str.outerRadius)
     	context.closePath();
+    	context.stroke();
     	context.fillStyle=str.color;
 	    context.fill();
 		}
@@ -136,10 +207,11 @@
 		context.fillRect(0,0, canvas.width, canvas.height);
 		}
 
-	function fader(){
+//meant to fade out previous shapes as new ones move around
+/*	function fader(){
 		context.fillStyle = 'rgba(0,0,0,0.3)';
 		context.fillRect(0,0, canvas.width, canvas.height);
-		}
+		}*/
 
 	function degreesToRadians(degrees){
 		return (degrees*Math.PI)/180;
@@ -150,7 +222,11 @@
 		canvas.height = window.innerHeight - 15;
 		fillBackgroundColor();
 
-		for(var i = 0; i< circles.length; i++){
+		for(var i = 0; i< triangles.length; i++){
+			drawTriangles(triangles[i]);
+		}
+
+		for(var i = 0; i< stars.length; i++){
 			drawStars(stars[i]);
 		}
 		for(var i = 0; i< circles.length; i++){
@@ -159,6 +235,8 @@
 
 		moveStars(stars);
 		growCircles(circles);
+		writeText();
+		fadeText();
 	}
 
 	window.onload = init;
